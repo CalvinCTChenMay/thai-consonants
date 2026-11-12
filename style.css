@@ -134,3 +134,7 @@ a{color:var(--accent)}
 .ctile .p,.ctile .w,.ctile .tag{align-self:center}
 .ctile .w{font-size:26px}
 .ctile .emo{padding:6px 8px;font-size:.95rem}
+/* unpublished card: outline the whole card and pin a corner label, so nothing inside shifts */
+.ctile{position:relative}
+.ctile.dirty{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold)}
+.ctile.dirty::after{content:attr(data-badge);position:absolute;top:6px;right:6px;font-size:.7rem;line-height:1.4;background:var(--gold-bg);color:var(--gold);border:1px solid var(--gold);border-radius:999px;padding:0 7px;pointer-events:none}

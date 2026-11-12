@@ -167,9 +167,9 @@ function updateState(){const n=changedList().length;
 function render(){
   const g=$('cgrid');g.innerHTML='';
   W.letters.forEach((x,i)=>{
-    const el=document.createElement('div');el.className='tile ctile';
+    const el=document.createElement('div');el.className='tile ctile'+(changed(i)?' dirty':'');
+    if(changed(i))el.dataset.badge=t('unpub');
     el.innerHTML='<span class="p" aria-hidden="true">'+previewHTML(i)+'</span><span class="w">'+esc(x.letter)+' '+esc(x.word)+'</span>'+
-      (changed(i)?'<span class="tag">'+esc(t('unpub'))+'</span>':'')+
       '<label class="fld">'+esc(t('fZh'))+'<input class="emo" id="z'+i+'" maxlength="20" lang="zh-Hant"></label>'+
       '<label class="fld">'+esc(t('fEmoji'))+'<input class="emo" id="e'+i+'" maxlength="8"></label>'+
       '<div class="say"><label class="btn sm">'+esc(t('upload'))+'<input type="file" accept="image/*" hidden></label>'+
