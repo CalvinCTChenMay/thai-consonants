@@ -33,3 +33,11 @@
 | `content.json` | 44 個字母的名稱詞、中文、表情符號和圖片路徑 |
 | `images/` | 管理頁上傳的圖片 |
 | `style.css` | 兩頁共用的樣式 |
+
+## 瀏覽統計（Google Analytics）
+
+1. 到 https://analytics.google.com 建立「資源」，再新增「網站」資料串流，網址填 `https://calvinctchenmay.github.io/thai-consonants/`。
+2. 複製「評估 ID」（格式像 `G-ABC123XYZ`）。
+3. 在 GitHub 打開 `config.js`，按鉛筆圖示編輯，把 ID 填進 `gaId: ""` 的引號裡，按 Commit changes。
+
+填好後約 1 到 2 分鐘生效。除了瀏覽次數，也會記錄這些事件：`mode_change`（切換模式）、`exam_finish`（考完試，含分數）、`print_sheet`（列印）、`language_change`（切換語言）、`autoplay_start`（開始自動播放）。管理頁不會載入統計程式。
