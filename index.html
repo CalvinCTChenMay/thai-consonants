@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>泰文子音圖卡</title>
+<meta name="description" content="看圖和名稱詞練習寫泰文 44 個子音，有手寫板、自動播放、發音和考試評分。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="style.css">
+<style>body{margin:0}[hidden]{display:none!important}html[lang="th"] body{font-family:var(--thai)}.hdr{display:flex;flex-wrap:wrap;gap:8px;align-items:center}</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1><span data-t="h1" style="font-family:inherit;color:inherit"></span> <span>ก ไก่</span></h1>
+      <p class="sub" data-t="sub"></p>
+    </div>
+    <div class="hdr">
+      <div class="seg" role="group" data-ta="aMode">
+        <button id="m-practice" aria-pressed="true" data-t="mPractice"></button>
+        <button id="m-grid" aria-pressed="false" data-t="mGrid"></button>
+        <button id="m-exam" aria-pressed="false" data-t="mExam"></button>
+      </div>
+      <div class="seg" role="group" aria-label="語言 ภาษา">
+        <button id="l-zh" aria-pressed="true" lang="zh-Hant">中文</button>
+        <button id="l-th" aria-pressed="false" lang="th">ไทย</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="opts">
+    <label><input type="checkbox" id="o-hide"> <span data-t="oHide"></span></label>
+    <label><input type="checkbox" id="o-shuffle" checked> <span data-t="oShuffle"></span></label>
+    <label><input type="checkbox" id="o-obs" checked> <span data-t="oObs"></span></label>
+    <label><input type="checkbox" id="o-say" checked> <span data-t="oSay"></span></label>
+    <button class="btn" id="b-restart" style="padding:4px 12px;font-size:.85rem" data-t="restart"></button>
+    <span style="display:inline-flex;align-items:center;gap:6px">
+      <button class="btn" id="b-auto" style="padding:4px 12px;font-size:.85rem" aria-pressed="false"></button>
+      <select id="o-speed" data-ta="aSpeed" style="font:inherit;font-size:.85rem;padding:4px 6px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink)">
+        <option value="3" data-t="s3"></option><option value="5" selected data-t="s5"></option><option value="8" data-t="s8"></option>
+      </select>
+    </span>
+  </div>
+
+  <p class="muted" id="sMsg" role="status" hidden></p>
+
+  <section id="v-practice" class="practice">
+    <div class="card" id="card">
+      <div class="prog" id="prog"></div>
+      <div class="pic" id="pic" aria-hidden="true"></div>
+      <div class="word" id="word"></div>
+      <div class="zh" id="zh" lang="zh-Hant"></div>
+      <div class="say" id="sayRow"><button class="btn sm" id="b-sayW" data-t="sayW"></button><button class="btn sm" id="b-sayN" data-t="sayN"></button></div>
+      <div class="ans" id="ans" hidden><b id="ansL"></b><span id="ansT"></span></div>
+      <div class="note" id="note"></div>
+    </div>
+    <div class="padbox">
+      <div class="padhint"><span data-t="padHint"></span><span class="score" id="score"></span></div>
+      <div class="pad" id="pad"><div class="ghost" id="ghost" hidden></div><canvas id="cv" data-ta="aPad"></canvas></div>
+      <div class="btns" id="btnsA">
+        <button class="btn" id="b-clear" data-t="clear"></button>
+        <button class="btn primary" id="b-reveal" data-t="reveal"></button>
+      </div>
+      <div class="btns" id="btnsB" hidden>
+        <button class="btn" id="b-again" data-t="again"></button>
+        <button class="btn good" id="b-known" data-t="known"></button>
+      </div>
+    </div>
+  </section>
+
+  <section id="v-grid" hidden>
+    <p class="sub" style="margin:0 0 10px" data-t="gridHint"></p>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <section id="v-exam" class="exam" hidden>
+    <div id="exSetup" class="setup">
+      <h2 data-t="exTitle"></h2>
+      <p class="muted" data-t="exDesc"></p>
+      <div class="row"><span data-t="exCountL"></span>
+        <div class="seg" id="exCount" role="group" data-ta="exCountL">
+          <button data-n="10" aria-pressed="false" data-t="n10"></button>
+          <button data-n="20" aria-pressed="true" data-t="n20"></button>
+          <button data-n="all" aria-pressed="false" data-t="nAll"></button>
+        </div>
+      </div>
+      <label class="row"><input type="checkbox" id="ex-word"> <span data-t="exWordL"></span></label>
+      <p class="muted" id="exBest"></p>
+      <div class="btns"><button class="btn primary" id="b-exStart" data-t="exStart"></button></div>
+    </div>
+    <div id="exQ" class="exam" hidden>
+      <div class="exhead"><span id="exN"></span><span id="exS"></span></div>
+      <div class="bar"><i id="exBar"></i></div>
+      <div class="card qcard"><div class="pic" id="exPic" aria-hidden="true"></div><div class="word" id="exWord"></div><div class="zh" id="exZh" lang="zh-Hant"></div><div class="say"><button class="btn sm" id="b-exSay" data-t="sayW"></button></div></div>
+      <div class="choices" id="exC"></div>
+      <div class="exfb" id="exFb" hidden><span id="exMsg"></span><button class="btn primary" id="exNext"></button></div>
+      <p class="muted" data-t="exKeys"></p>
+    </div>
+    <div id="exEnd" class="exam" hidden>
+      <div class="result">
+        <h2 data-t="resTitle"></h2>
+        <div class="big" id="rScore"></div>
+        <div class="pct" id="rPct"></div>
+        <div id="rGrade"></div>
+        <p class="muted" id="rTime"></p>
+        <p class="muted" id="rBest"></p>
+        <div class="btns" style="justify-content:center;margin-top:8px">
+          <button class="btn primary" id="b-exAgain" data-t="exAgain"></button>
+          <button class="btn" id="b-exWrong" data-t="exWrong"></button>
+          <button class="btn" id="b-exSetup" data-t="exSetupB"></button>
+        </div>
+      </div>
+      <h3 id="wrongH" data-t="wrongH"></h3>
+      <div class="grid" id="exWrongList"></div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <span data-t="foot"></span>
+    <a href="admin.html" data-t="admin"></a>
+  </footer>
+</div>
+
+<script>
+const T={
+zh:{title:'泰文子音圖卡',h1:'看圖寫子音',sub:'看圖和名稱詞，在右邊寫出子音，再看答案對照。',aMode:'模式',mPractice:'練習',mGrid:'全部圖卡',mExam:'考試',
+  oHide:'隱藏泰文，只看圖和中文',oShuffle:'隨機順序',oObs:'包含已廢除的 ฃ、ฅ',oSay:'看答案時自動念出',restart:'從頭開始',
+  autoOn:'自動播放',autoOff:'停止播放',aSpeed:'每張停留時間',s3:'每張 3 秒',s5:'每張 5 秒',s8:'每張 8 秒',
+  sayW:'念單字',sayN:'念字母名稱',padHint:'用滑鼠或手指在這裡寫',aPad:'手寫區',clear:'清除',reveal:'看答案（空白鍵）',again:'再練一次',known:'我會了（→）',
+  gridHint:'點圖卡看答案，再點一次蓋回去。',exTitle:'子音小考',exDesc:'看圖和中文，從四個字母裡選出正確的子音。選項會放形狀相近的字母，例如 ด 和 ต、บ 和 ป。',
+  exCountL:'題數',n10:'10 題',n20:'20 題',nAll:'全部',exWordL:'題目顯示泰文名稱詞（比較簡單）',exStart:'開始考試',exKeys:'按 1 到 4 選答案，按 Enter 到下一題',
+  resTitle:'考試成績',exAgain:'重考',exWrong:'只考答錯的題',exSetupB:'更改設定',wrongH:'答錯的題目',
+  foot:'聲音使用裝置內建的泰文語音。最佳成績只存在你的瀏覽器裡。',admin:'內容管理',
+  left:'剩 {n} 張',score:'會了 {k} / {t}',obsNote:'這個字母已廢除，現代泰文不使用',doneMsg:'{t} 個子音都練完了',again2:'再練一輪',
+  tapAns:'點我看答案',card:'{z} 圖卡',best:'最佳成績：{p} 分（{s} / {n}）',noBest:'還沒有考試紀錄',qNo:'第 {i} / {n} 題',correctN:'答對 {s}',opt:'選項 {k} {l}',
+  right:'答對了：{a}',wrong:'答錯了，正確答案是 {a}',next:'下一題',seeRes:'看成績',pts:'{p} 分',
+  g100:'滿分，全部答對',g80:'很好，再複習答錯的幾個',g60:'及格，繼續加油',g0:'多練習幾次再來考',time:'用時 {m} 分 {s} 秒',picked:'你選了 {l}',
+  noTTS:'這個瀏覽器不能念出聲音，請改用 Chrome、Safari 或 Edge。',noVoice:'這台裝置好像沒有泰文語音，可能念不出來。可以在系統的語音設定加裝「泰文（Thai）」語音後重新整理。'},
+th:{title:'บัตรภาพพยัญชนะไทย',h1:'ดูภาพ เขียนพยัญชนะ',sub:'ดูภาพและคำประจำพยัญชนะ เขียนพยัญชนะในช่องเขียน แล้วเปิดดูเฉลย',aMode:'โหมด',mPractice:'ฝึก',mGrid:'บัตรภาพทั้งหมด',mExam:'สอบ',
+  oHide:'ซ่อนคำภาษาไทย ดูแค่ภาพและความหมาย',oShuffle:'สุ่มลำดับ',oObs:'รวม ฃ และ ฅ ที่เลิกใช้แล้ว',oSay:'อ่านออกเสียงเมื่อเปิดเฉลย',restart:'เริ่มใหม่',
+  autoOn:'เล่นอัตโนมัติ',autoOff:'หยุดเล่น',aSpeed:'เวลาต่อใบ',s3:'ใบละ 3 วินาที',s5:'ใบละ 5 วินาที',s8:'ใบละ 8 วินาที',
+  sayW:'อ่านคำ',sayN:'อ่านชื่อพยัญชนะ',padHint:'เขียนตรงนี้ด้วยเมาส์หรือนิ้ว',aPad:'ช่องเขียน',clear:'ล้าง',reveal:'ดูเฉลย (Space)',again:'ฝึกอีกครั้ง',known:'จำได้แล้ว (→)',
+  gridHint:'แตะบัตรเพื่อดูเฉลย แตะอีกครั้งเพื่อปิด',exTitle:'แบบทดสอบพยัญชนะ',exDesc:'ดูภาพและความหมาย แล้วเลือกพยัญชนะที่ถูกต้องจาก 4 ตัวเลือก ตัวเลือกจะมีตัวอักษรที่หน้าตาคล้ายกัน เช่น ด กับ ต และ บ กับ ป',
+  exCountL:'จำนวนข้อ',n10:'10 ข้อ',n20:'20 ข้อ',nAll:'ทั้งหมด',exWordL:'แสดงคำประจำพยัญชนะในโจทย์ (ง่ายขึ้น)',exStart:'เริ่มสอบ',exKeys:'กด 1 ถึง 4 เพื่อเลือกคำตอบ กด Enter เพื่อไปข้อต่อไป',
+  resTitle:'ผลสอบ',exAgain:'สอบใหม่',exWrong:'สอบเฉพาะข้อที่ผิด',exSetupB:'เปลี่ยนการตั้งค่า',wrongH:'ข้อที่ตอบผิด',
+  foot:'เสียงอ่านใช้เสียงภาษาไทยที่มีในเครื่อง คะแนนสูงสุดเก็บไว้ในเบราว์เซอร์ของคุณเท่านั้น',admin:'จัดการเนื้อหา',
+  left:'เหลือ {n} ใบ',score:'จำได้ {k} / {t}',obsNote:'พยัญชนะตัวนี้เลิกใช้แล้วในภาษาไทยปัจจุบัน',doneMsg:'ฝึกครบทั้ง {t} ตัวแล้ว',again2:'ฝึกอีกรอบ',
+  tapAns:'แตะเพื่อดูเฉลย',card:'บัตร {z}',best:'คะแนนสูงสุด: {p} คะแนน ({s} / {n})',noBest:'ยังไม่มีประวัติการสอบ',qNo:'ข้อ {i} / {n}',correctN:'ถูก {s} ข้อ',opt:'ตัวเลือก {k} {l}',
+  right:'ถูกต้อง: {a}',wrong:'ผิด คำตอบที่ถูกคือ {a}',next:'ข้อต่อไป',seeRes:'ดูผลสอบ',pts:'{p} คะแนน',
+  g100:'เต็ม ตอบถูกทุกข้อ',g80:'ดีมาก ทบทวนข้อที่ผิดอีกนิด',g60:'ผ่าน สู้ต่อไป',g0:'ฝึกอีกหน่อยแล้วมาสอบใหม่',time:'ใช้เวลา {m} นาที {s} วินาที',picked:'คุณเลือก {l}',
+  noTTS:'เบราว์เซอร์นี้อ่านออกเสียงไม่ได้ กรุณาใช้ Chrome, Safari หรือ Edge',noVoice:'เครื่องนี้ดูเหมือนไม่มีเสียงภาษาไทย อาจอ่านออกเสียงไม่ได้ ติดตั้งเสียงภาษาไทยในการตั้งค่าเสียงของระบบ แล้วรีเฟรชหน้า'}};
+const LK='thaiConsonantLang';
+let lang=(()=>{const q=new URLSearchParams(location.search).get('lang');if(q==='th'||q==='zh')return q;
+  try{const s=localStorage.getItem(LK);if(s==='th'||s==='zh')return s}catch(_){}
+  return /^th/i.test(navigator.language||'')?'th':'zh'})();
+function t(k,v){let s=(T[lang]&&T[lang][k])||T.zh[k]||k;if(v)for(const x in v)s=s.split('{'+x+'}').join(v[x]);return s}
+
+// [letter, name word, Chinese, emoji, obsolete, image path] — fallback; content.json overrides it
+const D=[
+["ก","ไก่","雞","🐔",0,""],["ข","ไข่","蛋","🥚",0,""],["ฃ","ขวด","瓶子","🍾",1,""],["ค","ควาย","水牛","🐃",0,""],["ฅ","คน","人","🧍",1,""],
+["ฆ","ระฆัง","鐘","🔔",0,""],["ง","งู","蛇","🐍",0,""],["จ","จาน","盤子","🍽️",0,""],["ฉ","ฉิ่ง","小鈸","🥁",0,""],["ช","ช้าง","大象","🐘",0,""],
+["ซ","โซ่","鏈子","⛓️",0,""],["ฌ","เฌอ","樹","🌳",0,""],["ญ","หญิง","女人","👩",0,""],["ฎ","ชฎา","尖頂冠","👑",0,""],["ฏ","ปฏัก","刺棒","🔱",0,""],
+["ฐ","ฐาน","底座","🏛️",0,""],["ฑ","มณโฑ","曼托（王后）","👸",0,""],["ฒ","ผู้เฒ่า","老人","👴",0,""],["ณ","เณร","小沙彌","🧑‍🦲",0,""],["ด","เด็ก","小孩","🧒",0,""],
+["ต","เต่า","烏龜","🐢",0,""],["ถ","ถุง","袋子","🛍️",0,""],["ท","ทหาร","士兵","💂",0,""],["ธ","ธง","旗子","🚩",0,""],["น","หนู","老鼠","🐭",0,""],
+["บ","ใบไม้","葉子","🍃",0,""],["ป","ปลา","魚","🐟",0,""],["ผ","ผึ้ง","蜜蜂","🐝",0,""],["ฝ","ฝา","蓋子","🫙",0,""],["พ","พาน","高腳盤","🏆",0,""],
+["ฟ","ฟัน","牙齒","🦷",0,""],["ภ","สำเภา","帆船","⛵",0,""],["ม","ม้า","馬","🐎",0,""],["ย","ยักษ์","巨人","👹",0,""],["ร","เรือ","船","🚣",0,""],
+["ล","ลิง","猴子","🐒",0,""],["ว","แหวน","戒指","💍",0,""],["ศ","ศาลา","涼亭","🛖",0,""],["ษ","ฤๅษี","隱士","🧙",0,""],["ส","เสือ","老虎","🐅",0,""],
+["ห","หีบ","箱子","🧰",0,""],["ฬ","จุฬา","星形風箏","🪁",0,""],["อ","อ่าง","盆","🛁",0,""],["ฮ","นกฮูก","貓頭鷹","🦉",0,""]];
+const $=id=>document.getElementById(id);
+let queue=[],cur=-1,total=0,known=0,revealed=false;
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function zhOf(i){return D[i][2]}
+function picHTML(i){const im=D[i][5];if(im&&/^images\/[\w.\-]+$/.test(im))return '<img src="'+im+'" alt="">';return esc(D[i][3]||'')}
+function setPic(el,i){el.innerHTML=picHTML(i)}
+
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function deck(){return D.map((_,i)=>i).filter(i=>$('o-obs').checked||!D[i][4])}
+function start(){queue=deck();if($('o-shuffle').checked)shuffle(queue);total=queue.length;known=0;nextCard()}
+function cardText(){
+  $('prog').textContent=t('left',{n:queue.length});$('score').textContent=t('score',{k:known,t:total});
+  $('note').textContent=revealed&&D[cur][4]?t('obsNote'):''}
+function nextCard(){
+  const c=$('card');c.innerHTML='';
+  ['prog','pic','word','zh','sayRow','ans','note'].forEach(k=>c.appendChild(nodes[k]));
+  revealed=false;clearPad();$('ghost').hidden=true;nodes.ans.hidden=true;$('btnsA').hidden=false;$('btnsB').hidden=true;
+  if(!queue.length){showDone();return}
+  cur=queue[0];const d=D[cur];
+  setPic($('pic'),cur);
+  const w=$('word');w.textContent=$('o-hide').checked?'？？':d[1];w.classList.toggle('hidden',$('o-hide').checked);
+  $('zh').textContent=zhOf(cur);cardText();
+}
+const nodes={};['prog','pic','word','zh','sayRow','ans','note'].forEach(k=>nodes[k]=$(k));
+function reveal(){
+  if(revealed||cur<0||!queue.length)return;revealed=true;const d=D[cur];
+  $('ansL').textContent=d[0];$('ansT').textContent=d[0]+' '+d[1];$('ans').hidden=false;
+  const w=$('word');w.textContent=d[1];w.classList.remove('hidden');
+  $('ghost').textContent=d[0];$('ghost').hidden=false;cardText();
+  $('btnsA').hidden=true;$('btnsB').hidden=false;
+  if($('o-say').checked)say(chant(cur));
+}
+function markKnown(){if(!revealed)return;queue.shift();known++;nextCard()}
+function markAgain(){if(!revealed)return;queue.push(queue.shift());nextCard()}
+function showDone(){
+  const c=$('card');c.innerHTML='';
+  const box=document.createElement('div');box.className='done';
+  const w=document.createElement('div');w.className='word';w.lang='th';w.textContent='เก่งมาก';
+  const z=document.createElement('div');z.className='zh';z.textContent=t('doneMsg',{t:total});
+  const b=document.createElement('button');b.className='btn primary';b.textContent=t('again2');b.onclick=start;
+  box.append(w,z,b);c.appendChild(box);
+  $('btnsA').hidden=true;$('btnsB').hidden=true;$('score').textContent=t('score',{k:known,t:total});
+}
+
+const cv=$('cv'),ctx=cv.getContext('2d');let drawing=false,last=null;
+function fit(){const r=cv.getBoundingClientRect(),dpr=window.devicePixelRatio||1;cv.width=Math.round(r.width*dpr);cv.height=Math.round(r.height*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);
+  const g=$('ghost');g.style.fontSize=Math.round(r.height*0.78)+'px'}
+function clearPad(){ctx.clearRect(0,0,cv.width,cv.height)}
+function pt(e){const r=cv.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}}
+function pen(){ctx.strokeStyle=getComputedStyle(document.documentElement).getPropertyValue('--ink').trim()||'#1B2A44';ctx.fillStyle=ctx.strokeStyle;ctx.lineWidth=7;ctx.lineCap='round';ctx.lineJoin='round'}
+cv.addEventListener('pointerdown',e=>{drawing=true;try{cv.setPointerCapture(e.pointerId)}catch(_){};pen();last=pt(e);ctx.beginPath();ctx.arc(last.x,last.y,3.5,0,Math.PI*2);ctx.fill()});
+cv.addEventListener('pointermove',e=>{if(!drawing)return;const p=pt(e);ctx.beginPath();ctx.moveTo(last.x,last.y);ctx.lineTo(p.x,p.y);ctx.stroke();last=p});
+['pointerup','pointercancel','pointerleave'].forEach(x=>cv.addEventListener(x,()=>{drawing=false}));
+new ResizeObserver(fit).observe($('pad'));fit();
+
+function buildGrid(){
+  const g=$('grid');g.innerHTML='';
+  deck().forEach(i=>{const d=D[i];const el=document.createElement('button');el.className='tile';el.setAttribute('aria-label',t('card',{z:zhOf(i)}));
+    const hide=$('o-hide').checked;
+    el.innerHTML='<span class="p" aria-hidden="true">'+picHTML(i)+'</span><span class="w">'+(hide?'？？':d[1])+'</span><span class="z" lang="zh-Hant">'+esc(zhOf(i))+'</span><span class="q">'+esc(t('tapAns'))+'</span>';
+    el.onclick=()=>{const open=el.classList.toggle('open');const s=el.lastChild;
+      if(open){s.className='a';s.textContent=d[0];el.children[1].textContent=d[1];if($('o-say').checked)say(chant(i))}else{s.className='q';s.textContent=t('tapAns');el.children[1].textContent=hide?'？？':d[1]}};
+    g.appendChild(el)});
+}
+function mode(m){if(m!=='practice')stopAuto();['practice','grid','exam'].forEach(k=>{$('v-'+k).hidden=k!==m;$('m-'+k).setAttribute('aria-pressed',k===m)});
+  if(m==='grid')buildGrid();if(m==='practice')fit();if(m==='exam'&&!ex.running&&$('exEnd').hidden)examSetup()}
+
+const SIM=[["ข","ช","ซ","ฃ"],["ค","ด","ต","ฅ","ศ"],["ฆ","ม","ฒ","ฑ"],["ง","ว"],["จ","ร","ธ"],["ฉ","ณ","ฌ"],["ญ","ณ","ฌ","ฎ","ฏ"],
+  ["ก","ถ","ภ","ฎ"],["ท","ฑ","ห","ม"],["ธ","ฐ","ร"],["น","ฬ","ห","ม"],["บ","ป","ษ"],["ผ","ฝ","พ","ฟ"],["ย","ฮ","ข"],
+  ["ล","ส","ฬ","ศ"],["อ","ฮ","ย"],["ศ","ษ","ส"]];
+const ex={running:false,list:[],i:0,score:0,wrong:[],t0:0,count:'20',locked:false,lastOk:false,sec:0};
+const BEST='thaiConsonantExamBest';
+function similar(L){const s=new Set();SIM.forEach(g=>{if(g.includes(L))g.forEach(x=>s.add(x))});s.delete(L);return[...s]}
+function exShow(id){['exSetup','exQ','exEnd'].forEach(k=>$(k).hidden=k!==id)}
+function getBest(){try{return JSON.parse(localStorage.getItem(BEST)||'null')}catch(_){return null}}
+function bestText(b){return b?t('best',{p:b.p,s:b.s,n:b.n}):t('noBest')}
+function examSetup(){exShow('exSetup');$('exBest').textContent=bestText(getBest())}
+function examStart(list){ex.list=list;ex.i=0;ex.score=0;ex.wrong=[];ex.t0=Date.now();ex.running=true;exShow('exQ');examQ()}
+function examNew(){const all=shuffle(deck());examStart(ex.count==='all'?all:all.slice(0,Math.min(+ex.count,all.length)))}
+function qText(){
+  $('exN').textContent=t('qNo',{i:ex.i+1,n:ex.list.length});$('exS').textContent=t('correctN',{s:ex.score});
+  [...$('exC').children].forEach((b,k)=>b.setAttribute('aria-label',t('opt',{k:k+1,l:b.dataset.l})));
+  if(ex.locked){const d=D[ex.list[ex.i]],a=d[0]+' '+d[1];$('exMsg').textContent=ex.lastOk?t('right',{a}):t('wrong',{a});
+    $('exNext').textContent=ex.i+1<ex.list.length?t('next'):t('seeRes')}}
+function examQ(){
+  ex.locked=false;const d=D[ex.list[ex.i]];const n=ex.list.length;
+  $('exBar').style.width=Math.round(ex.i/n*100)+'%';
+  setPic($('exPic'),ex.list[ex.i]);$('exZh').textContent=zhOf(ex.list[ex.i]);
+  const sw=$('ex-word').checked;$('exWord').textContent=sw?d[1]:'';$('exWord').hidden=!sw;
+  const pool=deck().map(i=>D[i][0]);
+  const ds=shuffle(similar(d[0]).filter(x=>pool.includes(x))).slice(0,3);
+  const rest=shuffle(pool.filter(x=>x!==d[0]&&!ds.includes(x)));while(ds.length<3)ds.push(rest.pop());
+  const c=$('exC');c.innerHTML='';
+  shuffle([d[0],...ds]).forEach((L,k)=>{const b=document.createElement('button');b.className='choice';b.dataset.l=L;
+    b.innerHTML='<span class="k">'+(k+1)+'</span>'+L;b.onclick=()=>answer(L);c.appendChild(b)});
+  $('exFb').hidden=true;qText();
+}
+function answer(L){
+  if(ex.locked)return;ex.locked=true;const d=D[ex.list[ex.i]];const ok=L===d[0];ex.lastOk=ok;
+  [...$('exC').children].forEach(b=>{b.disabled=true;if(b.dataset.l===d[0])b.classList.add('right');else if(b.dataset.l===L)b.classList.add('wrongc')});
+  if(ok)ex.score++;else ex.wrong.push({i:ex.list[ex.i],pick:L});
+  $('exMsg').className=ok?'okt':'badt';
+  $('exWord').textContent=d[1];$('exWord').hidden=false;
+  qText();$('exFb').hidden=false;$('exNext').focus();
+  if($('o-say').checked)say(chant(ex.list[ex.i]));
+}
+function examNext(){if(!ex.locked)return;ex.i++;if(ex.i<ex.list.length)examQ();else examEnd()}
+function examEnd(){
+  ex.running=false;ex.locked=false;exShow('exEnd');ex.sec=Math.round((Date.now()-ex.t0)/1000);
+  const n=ex.list.length,s=ex.score,p=Math.round(s/n*100);
+  let b=getBest();if(!b||p>b.p||(p===b.p&&n>b.n)){b={p,s,n};try{localStorage.setItem(BEST,JSON.stringify(b))}catch(_){}}
+  endText();
+}
+function endText(){
+  const n=ex.list.length,s=ex.score,p=Math.round(s/n*100);
+  $('rScore').textContent=s+' / '+n;$('rPct').textContent=t('pts',{p});
+  $('rGrade').textContent=t(p===100?'g100':p>=80?'g80':p>=60?'g60':'g0');
+  $('rTime').textContent=t('time',{m:Math.floor(ex.sec/60),s:ex.sec%60});
+  $('rBest').textContent=bestText(getBest()||{p,s,n});
+  $('b-exWrong').hidden=!ex.wrong.length;$('wrongH').hidden=!ex.wrong.length;
+  $('exWrongList').innerHTML=ex.wrong.map(w=>{const d=D[w.i];return '<div class="tile"><span class="p" aria-hidden="true">'+picHTML(w.i)+'</span><span class="w">'+d[1]+'</span><span class="z" lang="zh-Hant">'+esc(zhOf(w.i))+'</span><span class="a">'+d[0]+'</span><span class="z">'+esc(t('picked',{l:w.pick}))+'</span></div>'}).join('');
+}
+$('exCount').querySelectorAll('button').forEach(b=>b.onclick=()=>{ex.count=b.dataset.n;$('exCount').querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b))});
+$('b-exStart').onclick=examNew;$('b-exAgain').onclick=examNew;$('b-exSetup').onclick=examSetup;$('exNext').onclick=examNext;
+$('b-exWrong').onclick=()=>examStart(shuffle(ex.wrong.map(w=>w.i)));
+
+$('m-practice').onclick=()=>mode('practice');$('m-grid').onclick=()=>mode('grid');$('m-exam').onclick=()=>mode('exam');
+$('b-restart').onclick=()=>{mode('practice');start()};$('b-clear').onclick=clearPad;$('b-reveal').onclick=reveal;$('b-known').onclick=markKnown;$('b-again').onclick=markAgain;
+$('o-hide').onchange=()=>{if(!revealed&&queue.length)nextCard();buildGrid()};
+$('o-shuffle').onchange=start;$('o-obs').onchange=()=>{start();buildGrid()};
+document.addEventListener('keydown',e=>{if(e.target.tagName==='INPUT'||e.target.tagName==='SELECT')return;
+  if(!$('v-exam').hidden){if($('exQ').hidden)return;
+    if(/^[1-4]$/.test(e.key)&&!ex.locked){const b=$('exC').children[+e.key-1];if(b)b.click()}
+    else if(e.key==='Enter'&&ex.locked&&e.target!==$('exNext')){e.preventDefault();examNext()}
+    return}
+  if($('v-practice').hidden||e.target.tagName==='BUTTON')return;
+  if(e.code==='Space'){e.preventDefault();reveal()}else if(e.key==='ArrowRight')markKnown();else if(e.key==='Backspace'||e.key==='Delete')clearPad()});
+let auto=null;
+function autoSec(){return +$('o-speed').value||5}
+function autoTick(){
+  if(!queue.length){start();auto=setTimeout(autoTick,autoSec()*1000);return}
+  if(!revealed){reveal();auto=setTimeout(autoTick,Math.max(2,autoSec()/2)*1000)}
+  else{queue.push(queue.shift());nextCard();auto=setTimeout(autoTick,autoSec()*1000)}
+}
+function autoLabel(){const b=$('b-auto');b.textContent=auto?t('autoOff'):t('autoOn');b.setAttribute('aria-pressed',auto?'true':'false');b.classList.toggle('primary',!!auto)}
+function stopAuto(){if(auto){clearTimeout(auto);auto=null}autoLabel()}
+$('b-auto').onclick=()=>{if(auto){stopAuto();return}
+  mode('practice');auto=setTimeout(autoTick,(revealed?Math.max(2,autoSec()/2):autoSec())*1000);autoLabel()};
+['b-reveal','b-known','b-again','b-restart'].forEach(id=>$(id).addEventListener('click',stopAuto));
+
+const NM={"ก":"กอ","ข":"ขอ","ฃ":"ขอ","ค":"คอ","ฅ":"คอ","ฆ":"คอ","ง":"งอ","จ":"จอ","ฉ":"ฉอ","ช":"ชอ","ซ":"ซอ","ฌ":"ชอ","ญ":"ยอ","ฎ":"ดอ","ฏ":"ตอ",
+  "ฐ":"ถอ","ฑ":"ทอ","ฒ":"ทอ","ณ":"นอ","ด":"ดอ","ต":"ตอ","ถ":"ถอ","ท":"ทอ","ธ":"ทอ","น":"นอ","บ":"บอ","ป":"ปอ","ผ":"ผอ","ฝ":"ฝอ","พ":"พอ",
+  "ฟ":"ฟอ","ภ":"พอ","ม":"มอ","ย":"ยอ","ร":"รอ","ล":"ลอ","ว":"วอ","ศ":"สอ","ษ":"สอ","ส":"สอ","ห":"หอ","ฬ":"ลอ","อ":"ออ","ฮ":"ฮอ"};
+function chant(i){return (NM[D[i][0]]||D[i][0])+' '+D[i][1]}
+const TTS='speechSynthesis' in window;let thVoice=null,sKey='';
+function pickVoice(){try{thVoice=speechSynthesis.getVoices().find(v=>/^th([-_]|$)/i.test(v.lang))||null}catch(_){thVoice=null}}
+if(TTS){pickVoice();try{speechSynthesis.addEventListener('voiceschanged',pickVoice)}catch(_){}}
+function smsg(k){sKey=k;const m=$('sMsg');m.textContent=k?t(k):'';m.hidden=!k}
+function say(s){
+  if(!TTS){smsg('noTTS');return}
+  try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(s);u.lang='th-TH';if(thVoice)u.voice=thVoice;u.rate=.8;speechSynthesis.speak(u)}catch(_){}
+  if(!thVoice&&speechSynthesis.getVoices().length)smsg('noVoice');
+}
+$('b-sayW').onclick=()=>{if(cur>=0)say(D[cur][1])};
+$('b-sayN').onclick=()=>{if(cur>=0)say(chant(cur))};
+$('b-exSay').onclick=()=>{if(ex.list.length)say(D[ex.list[ex.i]][1])};
+
+function setLang(l){
+  lang=l;try{localStorage.setItem(LK,l)}catch(_){}
+  document.documentElement.lang=l==='th'?'th':'zh-Hant';document.title=t('title');
+  document.querySelectorAll('[data-t]').forEach(el=>el.textContent=t(el.dataset.t));
+  document.querySelectorAll('[data-ta]').forEach(el=>el.setAttribute('aria-label',t(el.dataset.ta)));
+  $('l-zh').setAttribute('aria-pressed',l==='zh');$('l-th').setAttribute('aria-pressed',l==='th');
+  autoLabel();if(sKey)smsg(sKey);
+  if(queue.length)cardText();else if(cur>=0)showDone();
+  if(!$('v-grid').hidden)buildGrid();
+  if(!$('exSetup').hidden)$('exBest').textContent=bestText(getBest());
+  if(!$('exQ').hidden)qText();
+  if(!$('exEnd').hidden)endText();
+}
+$('l-zh').onclick=()=>setLang('zh');$('l-th').onclick=()=>setLang('th');
+
+function applyContent(j){
+  if(!j||!Array.isArray(j.letters)||j.letters.length!==D.length)return false;
+  const nd=j.letters.map(x=>[String(x.letter||''),String(x.word||''),String(x.zh||''),String(x.emoji||''),x.obsolete?1:0,String(x.image||'')]);
+  if(nd.some(x=>!x[0]||!x[1]))return false;
+  D.splice(0,D.length,...nd);return true}
+
+setLang(lang);
+start();
+fetch('content.json',{cache:'no-cache'}).then(r=>r.ok?r.json():null).then(j=>{
+  if(!applyContent(j))return;
+  if(!ex.running)start();
+  if(!$('v-grid').hidden)buildGrid();
+}).catch(()=>{});
+</script>
+</body>
+</html>

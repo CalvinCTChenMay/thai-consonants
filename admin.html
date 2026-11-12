@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>泰文子音圖卡管理</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="style.css">
+<style>body{margin:0}[hidden]{display:none!important}html[lang="th"] body{font-family:var(--thai)}.ctile .emo{text-align:left}.hdr{display:flex;flex-wrap:wrap;gap:8px;align-items:center}</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1><span data-t="h1" style="font-family:inherit;color:inherit"></span> <span>ก ไก่</span></h1>
+      <p class="sub" data-t="sub"></p>
+    </div>
+    <div class="hdr">
+      <div class="seg" role="group" aria-label="語言 ภาษา">
+        <button id="l-zh" aria-pressed="true" lang="zh-Hant">中文</button>
+        <button id="l-th" aria-pressed="false" lang="th">ไทย</button>
+      </div>
+      <a class="btn sm" href="./" data-t="back"></a>
+      <button class="btn sm" id="b-logout" hidden></button>
+    </div>
+  </header>
+
+  <section id="v-login" class="panel">
+    <h2 style="margin:0;font-size:1.2rem" data-t="loginH"></h2>
+    <p class="muted" data-t="loginDesc"></p>
+    <details>
+      <summary style="cursor:pointer" data-t="howto"></summary>
+      <ol style="margin-top:8px" id="steps"></ol>
+    </details>
+    <label class="fld" for="tok" style="font-size:.9rem"><span data-t="tokL"></span>
+      <input type="password" id="tok" autocomplete="off" placeholder="github_pat_..."></label>
+    <label class="row" style="font-size:.9rem"><input type="checkbox" id="remember"> <span data-t="remember"></span></label>
+    <p class="err" id="loginErr" role="alert"></p>
+    <div class="btns"><button class="btn primary" id="b-login"></button></div>
+  </section>
+
+  <section id="v-edit" hidden>
+    <div class="bar2">
+      <span id="state" class="muted" role="status"></span>
+      <div class="btns"><button class="btn sm" id="b-discard" data-t="discard"></button><button class="btn primary" id="b-publish"></button></div>
+    </div>
+    <p id="pubMsg" class="muted" role="status" style="margin:10px 0"></p>
+    <p class="muted" style="margin:0 0 12px" data-t="imgHint"></p>
+    <div class="grid" id="cgrid"></div>
+  </section>
+</div>
+
+<script>
+const OWNER='CalvinCTChenMay',REPO='thai-consonants',BRANCH='main';
+const API='https://api.github.com/repos/'+OWNER+'/'+REPO;
+const TK='thaiConsonantAdminToken',LK='thaiConsonantLang';
+const T={
+zh:{title:'泰文子音圖卡管理',h1:'內容管理',sub:'修改圖片、表情符號和中文，按「發布到網站」後所有訪客都會看到。',back:'回練習頁',logout:'登出',
+  logoutArm:'還有沒發布的修改，再按一次登出',loginH:'用 GitHub 金鑰登入',
+  loginDesc:'只有能修改這個網站 repository 的人可以登入。金鑰只存在你這台電腦的瀏覽器裡，不會傳給 GitHub 以外的地方。',
+  howto:'第一次使用：怎麼產生金鑰',
+  steps:['打開{a}GitHub 的新增金鑰頁面{/a}（要先登入 GitHub）。','Token name 填「泰文圖卡管理」，Expiration 選你要的期限。',
+    'Repository access 選「Only select repositories」，再選 {repo}。','Permissions 裡找到 Contents，改成「Read and write」。',
+    '按最下面的 Generate token，複製產生的金鑰（開頭是 github_pat_），貼到下面。'],
+  tokL:'GitHub 金鑰',remember:'在這台電腦記住我（公用電腦請不要勾）',login:'登入',loggingIn:'登入中…',needTok:'請先貼上金鑰',
+  discard:'放棄修改',publish:'發布到網站',publishing:'發布中…',imgHint:'上傳的圖片會自動放大或縮小，完整放進正方形並置中。有圖片時會優先顯示圖片，沒有圖片才顯示表情符號。',
+  stDirty:'有 {n} 個字母還沒發布',stClean:'所有內容都已發布',fZh:'中文',fEmoji:'表情符號',upload:'上傳圖片',rmImg:'移除圖片',unpub:'未發布',
+  errNet:'連不上 GitHub，請檢查網路後再試。',err401:'金鑰無效或已經過期，請重新產生一把。',
+  err403:'這把金鑰沒有 {repo} 的寫入權限。產生金鑰時要選這個 repository，並把 Contents 設成 Read and write。',
+  errChanged:'網站內容剛被別的地方改過。請按「放棄修改」重新載入，再改一次。',errOther:'GitHub 回覆錯誤（{s}）',
+  badFile:'這個檔案讀不到，請換一張圖片',notImg:'這個檔案不是圖片，請換一張',uploading:'正在上傳到 GitHub…',
+  published:'已發布 {names}。大約 1 到 2 分鐘後網站會更新，訪客重新整理就會看到。',viewCommit:'在 GitHub 查看這次修改',
+  discarded:'已放棄修改，重新載入最新內容'},
+th:{title:'จัดการบัตรภาพพยัญชนะไทย',h1:'จัดการเนื้อหา',sub:'แก้ไขรูป อีโมจิ และความหมายภาษาจีน กด「เผยแพร่ขึ้นเว็บไซต์」แล้วผู้เข้าชมทุกคนจะเห็น',back:'กลับไปหน้าฝึก',logout:'ออกจากระบบ',
+  logoutArm:'ยังมีการแก้ไขที่ไม่ได้เผยแพร่ กดอีกครั้งเพื่อออกจากระบบ',loginH:'เข้าสู่ระบบด้วยคีย์ GitHub',
+  loginDesc:'เข้าสู่ระบบได้เฉพาะผู้ที่มีสิทธิ์แก้ไข repository ของเว็บไซต์นี้ คีย์จะเก็บไว้ในเบราว์เซอร์ของเครื่องนี้เท่านั้น และไม่ถูกส่งไปที่อื่นนอกจาก GitHub',
+  howto:'ใช้ครั้งแรก: วิธีสร้างคีย์',
+  steps:['เปิด{a}หน้าสร้างคีย์ใหม่ของ GitHub{/a} (ต้องเข้าสู่ระบบ GitHub ก่อน)','ช่อง Token name ใส่ชื่อ เช่น「thai-cards」 ส่วน Expiration เลือกระยะเวลาที่ต้องการ',
+    'ที่ Repository access เลือก「Only select repositories」 แล้วเลือก {repo}','ในส่วน Permissions หา Contents แล้วเปลี่ยนเป็น「Read and write」',
+    'กด Generate token ด้านล่างสุด คัดลอกคีย์ที่ได้ (ขึ้นต้นด้วย github_pat_) แล้ววางด้านล่าง'],
+  tokL:'คีย์ GitHub',remember:'จดจำฉันในเครื่องนี้ (ถ้าเป็นเครื่องสาธารณะ ห้ามติ๊ก)',login:'เข้าสู่ระบบ',loggingIn:'กำลังเข้าสู่ระบบ…',needTok:'กรุณาวางคีย์ก่อน',
+  discard:'ยกเลิกการแก้ไข',publish:'เผยแพร่ขึ้นเว็บไซต์',publishing:'กำลังเผยแพร่…',imgHint:'รูปที่อัปโหลดจะถูกย่อหรือขยายให้พอดีกรอบสี่เหลี่ยมจัตุรัสและจัดไว้ตรงกลางโดยอัตโนมัติ ถ้ามีรูปจะแสดงรูปก่อน ถ้าไม่มีรูปจึงแสดงอีโมจิ',
+  stDirty:'มี {n} ตัวที่ยังไม่เผยแพร่',stClean:'เผยแพร่เนื้อหาทั้งหมดแล้ว',fZh:'ความหมายภาษาจีน',fEmoji:'อีโมจิ',upload:'อัปโหลดรูป',rmImg:'ลบรูป',unpub:'ยังไม่เผยแพร่',
+  errNet:'เชื่อมต่อ GitHub ไม่ได้ กรุณาตรวจสอบอินเทอร์เน็ตแล้วลองใหม่',err401:'คีย์ไม่ถูกต้องหรือหมดอายุแล้ว กรุณาสร้างคีย์ใหม่',
+  err403:'คีย์นี้ไม่มีสิทธิ์เขียนใน {repo} ตอนสร้างคีย์ต้องเลือก repository นี้ และตั้ง Contents เป็น Read and write',
+  errChanged:'เนื้อหาเว็บไซต์เพิ่งถูกแก้ไขจากที่อื่น กรุณากด「ยกเลิกการแก้ไข」เพื่อโหลดใหม่ แล้วแก้อีกครั้ง',errOther:'GitHub แจ้งข้อผิดพลาด ({s})',
+  badFile:'อ่านไฟล์นี้ไม่ได้ กรุณาเลือกรูปอื่น',notImg:'ไฟล์นี้ไม่ใช่รูปภาพ กรุณาเลือกไฟล์อื่น',uploading:'กำลังอัปโหลดขึ้น GitHub…',
+  published:'เผยแพร่ {names} แล้ว เว็บไซต์จะอัปเดตในอีกประมาณ 1–2 นาที ผู้เข้าชมรีเฟรชหน้าก็จะเห็น',viewCommit:'ดูการแก้ไขครั้งนี้บน GitHub',
+  discarded:'ยกเลิกการแก้ไขแล้ว และโหลดเนื้อหาล่าสุดใหม่'}};
+let lang=(()=>{const q=new URLSearchParams(location.search).get('lang');if(q==='th'||q==='zh')return q;
+  try{const s=localStorage.getItem(LK);if(s==='th'||s==='zh')return s}catch(_){}
+  return /^th/i.test(navigator.language||'')?'th':'zh'})();
+function t(k,v){let s=(T[lang]&&T[lang][k])||T.zh[k]||k;if(typeof s==='string'&&v)for(const x in v)s=s.split('{'+x+'}').join(v[x]);return s}
+const $=id=>document.getElementById(id);
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+
+let token='';try{token=sessionStorage.getItem(TK)||localStorage.getItem(TK)||''}catch(_){}
+let W=null,orig='',pend={},preview={},busy=false,loggingIn=false,loginErr=null,msg=null,logoutArm=false;
+
+async function gh(path,opt={}){
+  const h={'Authorization':'Bearer '+token,'X-GitHub-Api-Version':'2022-11-28','Accept':opt.raw?'application/vnd.github.raw+json':'application/vnd.github+json'};
+  if(opt.body)h['Content-Type']='application/json';
+  let r;try{r=await fetch(API+path,{method:opt.method||'GET',headers:h,body:opt.body?JSON.stringify(opt.body):undefined,cache:'no-store'})}
+  catch(_){const e=new Error('network');e.status=0;throw e}
+  if(!r.ok){const e=new Error('HTTP '+r.status);e.status=r.status;try{e.detail=(await r.json()).message}catch(_){}throw e}
+  return opt.raw?r.text():r.json()}
+function errText(e){const repo=OWNER+'/'+REPO;
+  if(e.status===0)return t('errNet');if(e.status===401)return t('err401');
+  if(e.status===403||e.status===404)return t('err403',{repo});
+  if(e.status===409||e.status===422||e.status==='changed')return t('errChanged');
+  return t('errOther',{s:e.status})+(e.detail?': '+e.detail:'')}
+
+/* status messages are stored as data so they re-render when the language changes */
+function pub(m){msg=m;renderMsg()}
+function renderMsg(){const el=$('pubMsg');el.textContent='';if(!msg){el.className='muted';return}
+  el.className=msg.kind==='err'?'err':msg.kind==='ok'?'okmsg':'muted';
+  el.append(msg.err?errText(msg.err):t(msg.k,msg.v));
+  if(msg.url){const a=document.createElement('a');a.href=msg.url;a.target='_blank';a.rel='noopener';a.textContent=t('viewCommit');el.append(' ',a)}}
+
+function renderStatic(){
+  document.documentElement.lang=lang==='th'?'th':'zh-Hant';document.title=t('title');
+  document.querySelectorAll('[data-t]').forEach(el=>el.textContent=t(el.dataset.t));
+  $('l-zh').setAttribute('aria-pressed',lang==='zh');$('l-th').setAttribute('aria-pressed',lang==='th');
+  const ol=$('steps');ol.innerHTML='';
+  t('steps').forEach(s=>{const li=document.createElement('li');
+    const parts=s.split(/\{a\}|\{\/a\}/);
+    parts.forEach((p,k)=>{if(k===1){const a=document.createElement('a');a.href='https://github.com/settings/personal-access-tokens/new';a.target='_blank';a.rel='noopener';a.textContent=p;li.append(a)}
+      else{const q=p.split('{repo}');q.forEach((x,j)=>{li.append(x);if(j<q.length-1){const c=document.createElement('code');c.textContent=OWNER+'/'+REPO;li.append(c)}})}});
+    ol.append(li)});
+  $('b-login').textContent=loggingIn?t('loggingIn'):t('login');
+  $('loginErr').textContent=loginErr?(loginErr.err?errText(loginErr.err):t(loginErr.k)):'';
+  $('b-logout').textContent=logoutArm?t('logoutArm'):t('logout');
+  $('b-publish').textContent=busy?t('publishing'):t('publish');
+  renderMsg();if(W)render();}
+function setLang(l){lang=l;try{localStorage.setItem(LK,l)}catch(_){}renderStatic()}
+$('l-zh').onclick=()=>setLang('zh');$('l-th').onclick=()=>setLang('th');
+
+async function login(tk,remember){
+  token=tk;loginErr=null;loggingIn=true;$('b-login').disabled=true;renderStatic();
+  try{
+    const repo=await gh('');
+    if(!repo.permissions||!repo.permissions.push){const e=new Error();e.status=403;throw e}
+    try{if(remember!==null)(remember?localStorage:sessionStorage).setItem(TK,tk)}catch(_){}
+    await loadContent();
+    $('v-login').hidden=true;$('v-edit').hidden=false;$('b-logout').hidden=false;
+  }catch(e){token='';forget();loginErr={err:e};$('v-login').hidden=false;$('v-edit').hidden=true}
+  finally{loggingIn=false;$('b-login').disabled=false;renderStatic()}}
+function forget(){try{sessionStorage.removeItem(TK);localStorage.removeItem(TK)}catch(_){}}
+
+async function loadContent(){
+  const text=await gh('/contents/content.json?ref='+BRANCH,{raw:true});
+  orig=text;W=JSON.parse(text);pend={};render();}
+
+function changed(i){const O=JSON.parse(orig).letters[i];return !!pend[i]||JSON.stringify(O)!==JSON.stringify(W.letters[i])}
+function changedList(){return W.letters.map((_,i)=>i).filter(changed)}
+function previewHTML(i){const x=W.letters[i];
+  if(pend[i])return '<img src="'+pend[i].data+'" alt="">';
+  if(x.image)return '<img src="'+esc(preview[x.image]||x.image)+'" alt="">';
+  return esc(x.emoji||'')}
+function updateState(){const n=changedList().length;
+  $('state').textContent=n?t('stDirty',{n}):t('stClean');
+  $('b-publish').disabled=busy||!n;$('b-discard').disabled=busy||!n}
+
+function render(){
+  const g=$('cgrid');g.innerHTML='';
+  W.letters.forEach((x,i)=>{
+    const el=document.createElement('div');el.className='tile ctile';
+    el.innerHTML='<span class="p" aria-hidden="true">'+previewHTML(i)+'</span><span class="w">'+esc(x.letter)+' '+esc(x.word)+'</span>'+
+      (changed(i)?'<span class="tag">'+esc(t('unpub'))+'</span>':'')+
+      '<label class="fld">'+esc(t('fZh'))+'<input class="emo" id="z'+i+'" maxlength="20" lang="zh-Hant"></label>'+
+      '<label class="fld">'+esc(t('fEmoji'))+'<input class="emo" id="e'+i+'" maxlength="8"></label>'+
+      '<div class="say"><label class="btn sm">'+esc(t('upload'))+'<input type="file" accept="image/*" hidden></label>'+
+      ((pend[i]||x.image)?'<button class="btn sm" data-rm="1">'+esc(t('rmImg'))+'</button>':'')+'</div>';
+    g.appendChild(el);
+    const z=el.querySelector('#z'+i),e=el.querySelector('#e'+i);z.value=x.zh||'';e.value=x.emoji||'';
+    z.onchange=()=>{const v=z.value.trim();if(!v){z.value=x.zh;return}x.zh=v;render()};
+    e.onchange=()=>{const v=e.value.trim();if(!v){e.value=x.emoji;return}x.emoji=v;render()};
+    el.querySelector('input[type=file]').onchange=ev=>{const f=ev.target.files[0];if(f)loadImg(f,i)};
+    const rm=el.querySelector('[data-rm]');if(rm)rm.onclick=()=>{if(pend[i])delete pend[i];else x.image='';render()};
+  });
+  updateState()}
+
+function loadImg(f,i){
+  const r=new FileReader();
+  r.onerror=()=>pub({k:'badFile',kind:'err'});
+  r.onload=()=>{const im=new Image();
+    im.onerror=()=>pub({k:'notImg',kind:'err'});
+    im.onload=()=>{
+      /* fit any size into a 320x320 square: scale up or down, keep proportions, centre, small margin */
+      const S=320,M=Math.round(S*.04),box=S-M*2;
+      const w=im.naturalWidth||im.width,h=im.naturalHeight||im.height;
+      if(!w||!h){pub({k:'notImg',kind:'err'});return}
+      const s=box/Math.max(w,h),dw=Math.round(w*s),dh=Math.round(h*s);
+      const c=document.createElement('canvas');c.width=S;c.height=S;const x=c.getContext('2d');
+      x.imageSmoothingEnabled=true;x.imageSmoothingQuality='high';
+      x.drawImage(im,Math.round((S-dw)/2),Math.round((S-dh)/2),dw,dh);let u=c.toDataURL('image/webp',.85),ext='webp';
+      if(!u.startsWith('data:image/webp')){x.globalCompositeOperation='destination-over';x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);u=c.toDataURL('image/jpeg',.85);ext='jpg'}
+      pend[i]={data:u,ext};pub(null);render()};
+    im.src=r.result};
+  r.readAsDataURL(f)}
+
+async function publish(){
+  const list=changedList();if(!list.length||busy)return;
+  busy=true;updateState();$('b-publish').textContent=t('publishing');pub({k:'uploading'});
+  const snap=JSON.stringify(W);
+  try{
+    const ref=await gh('/git/ref/heads/'+BRANCH);const base=ref.object.sha;
+    const bc=await gh('/git/commits/'+base);
+    const remote=await gh('/contents/content.json?ref='+base,{raw:true});
+    if(remote!==orig){const e=new Error();e.status='changed';throw e}
+    const files=new Set((await gh('/git/trees/'+bc.tree.sha+'?recursive=1')).tree.map(x=>x.path));
+    const O=JSON.parse(orig),tree=[],stamp=Date.now().toString(36);
+    for(const k of Object.keys(pend)){const i=+k,p=pend[k];
+      const path='images/'+String(i+1).padStart(2,'0')+'-'+stamp+'.'+p.ext;
+      const b=await gh('/git/blobs',{method:'POST',body:{content:p.data.split(',')[1],encoding:'base64'}});
+      tree.push({path,mode:'100644',type:'blob',sha:b.sha});preview[path]=p.data;W.letters[i].image=path}
+    O.letters.forEach((x,i)=>{if(x.image&&x.image!==W.letters[i].image&&/^images\//.test(x.image)&&files.has(x.image)&&!W.letters.some(y=>y.image===x.image))
+      tree.push({path:x.image,mode:'100644',type:'blob',sha:null})});
+    const json=JSON.stringify(W,null,2)+'\n';
+    const jb=await gh('/git/blobs',{method:'POST',body:{content:json,encoding:'utf-8'}});
+    tree.push({path:'content.json',mode:'100644',type:'blob',sha:jb.sha});
+    const nt=await gh('/git/trees',{method:'POST',body:{base_tree:bc.tree.sha,tree}});
+    const names=list.map(i=>W.letters[i].letter).join('、');
+    const nc=await gh('/git/commits',{method:'POST',body:{message:'更新內容：'+names,tree:nt.sha,parents:[base]}});
+    await gh('/git/refs/heads/'+BRANCH,{method:'PATCH',body:{sha:nc.sha}});
+    orig=json;pend={};
+    pub({k:'published',v:{names},kind:'ok',url:nc.html_url||''});
+  }catch(e){W=JSON.parse(snap);pub({err:e,kind:'err'});if(e.status===401)forget()}
+  finally{busy=false;$('b-publish').textContent=t('publish');render()}}
+
+$('b-login').onclick=()=>{const tk=$('tok').value.trim();if(!tk){loginErr={k:'needTok'};renderStatic();return}login(tk,$('remember').checked)};
+$('tok').addEventListener('keydown',e=>{if(e.key==='Enter')$('b-login').click()});
+$('b-publish').onclick=publish;
+$('b-discard').onclick=async()=>{if(busy)return;try{await loadContent();pub({k:'discarded'})}catch(e){pub({err:e,kind:'err'})}};
+$('b-logout').onclick=()=>{
+  if(W&&changedList().length&&!logoutArm){logoutArm=true;renderStatic();setTimeout(()=>{logoutArm=false;renderStatic()},4000);return}
+  logoutArm=false;forget();token='';W=null;pend={};msg=null;$('tok').value='';$('cgrid').innerHTML='';
+  $('v-edit').hidden=true;$('v-login').hidden=false;$('b-logout').hidden=true;renderStatic()};
+window.addEventListener('beforeunload',e=>{if(W&&changedList().length){e.preventDefault();e.returnValue=''}});
+renderStatic();
+if(token)login(token,null);
+</script>
+</body>
+</html>

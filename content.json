@@ -1,0 +1,357 @@
+{
+  "version": 1,
+  "letters": [
+    {
+      "letter": "ก",
+      "word": "ไก่",
+      "zh": "雞",
+      "emoji": "🐔",
+      "obsolete": false,
+      "image": ""
+    },
+    {
+      "letter": "ข",
+      "word": "ไข่",
+      "zh": "蛋",
+      "emoji": "🥚",
+      "obsolete": false,
+      "image": ""
+    },
+    {
+      "letter": "ฃ",
+      "word": "ขวด",
+      "zh": "瓶子",
+      "emoji": "🍾",
+      "obsolete": true,
+      "image": ""
+    },
+    {
+      "letter": "ค",
+      "word": "ควาย",
+      "zh": "水牛",
+      "emoji": "🐃",
+      "obsolete": false,
+      "image": ""
+    },
+    {
+      "letter": "ฅ",
+      "word": "คน",
+      "zh": "人",
+      "emoji": "🧍",
+      "obsolete": true,
+      "image": ""
+    },
+    {
+      "letter": "ฆ",
+      "word": "ระฆัง",
+      "zh": "鐘",
+      "emoji": "🔔",
+      "obsolete": false,
+      "image": ""
+    },
+    {
+      "letter": "ง",
+      "word": "งู",
+      "zh": "蛇",
+      "emoji": "🐍",
+      "obsolete": false,
+      "image": ""
+    },
+    {
+      "letter": "จ",
+      "word": "จาน",
+      "zh": "盤子",
+      "emoji": "🍽️",
+      "obsolete": false,
+      "image": ""
+    },
+    {
+      "letter": "ฉ",
+      "word": "ฉิ่ง",
+      "zh": "小鈸",
+      "emoji": "🥁",
+      "obsolete": false,
+      "image": ""
+    },
+    {
+      "letter": "ช",
+      "word": "ช้าง",
+      "zh": "大象",
+      "emoji": "🐘",
+      "obsolete": false,
+      "image": ""
+    },
+    {
+      "letter": "ซ",
+      "word": "โซ่",
+      "zh": "鏈子",
+      "emoji": "⛓️",
+      "obsolete": false,
+      "image": ""
+    },
+    {
+      "letter": "ฌ",
+      "word": "เฌอ",
+      "zh": "樹",
+      "emoji": "🌳",
+      "obsolete": false,
+      "image": ""
+    },
+    {
+      "letter": "ญ",
+      "word": "หญิง",
+      "zh": "女人",
+      "emoji": "👩",
+      "obsolete": false,
+      "image": ""
+    },
+    {
+      "letter": "ฎ",
+      "word": "ชฎา",
+      "zh": "尖頂冠",
+      "emoji": "👑",
+      "obsolete": false,
+      "image": ""
+    },
+    {
+      "letter": "ฏ",
+      "word": "ปฏัก",
+      "zh": "刺棒",
+      "emoji": "🔱",
+      "obsolete": false,
+      "image": ""
+    },
+    {
+      "letter": "ฐ",
+      "word": "ฐาน",
+      "zh": "底座",
+      "emoji": "🏛️",
+      "obsolete": false,
+      "image": ""
+    },
+    {
+      "letter": "ฑ",
+      "word": "มณโฑ",
+      "zh": "曼托（王后）",
+      "emoji": "👸",
+      "obsolete": false,
+      "image": ""
+    },
+    {
+      "letter": "ฒ",
+      "word": "ผู้เฒ่า",
+      "zh": "老人",
+      "emoji": "👴",
+      "obsolete": false,
+      "image": ""
+    },
+    {
+      "letter": "ณ",
+      "word": "เณร",
+      "zh": "小沙彌",
+      "emoji": "🧑‍🦲",
+      "obsolete": false,
+      "image": ""
+    },
+    {
+      "letter": "ด",
+      "word": "เด็ก",
+      "zh": "小孩",
+      "emoji": "🧒",
+      "obsolete": false,
+      "image": ""
+    },
+    {
+      "letter": "ต",
+      "word": "เต่า",
+      "zh": "烏龜",
+      "emoji": "🐢",
+      "obsolete": false,
+      "image": ""
+    },
+    {
+      "letter": "ถ",
+      "word": "ถุง",
+      "zh": "袋子",
+      "emoji": "🛍️",
+      "obsolete": false,
+      "image": ""
+    },
+    {
+      "letter": "ท",
+      "word": "ทหาร",
+      "zh": "士兵",
+      "emoji": "💂",
+      "obsolete": false,
+      "image": ""
+    },
+    {
+      "letter": "ธ",
+      "word": "ธง",
+      "zh": "旗子",
+      "emoji": "🚩",
+      "obsolete": false,
+      "image": ""
+    },
+    {
+      "letter": "น",
+      "word": "หนู",
+      "zh": "老鼠",
+      "emoji": "🐭",
+      "obsolete": false,
+      "image": ""
+    },
+    {
+      "letter": "บ",
+      "word": "ใบไม้",
+      "zh": "葉子",
+      "emoji": "🍃",
+      "obsolete": false,
+      "image": ""
+    },
+    {
+      "letter": "ป",
+      "word": "ปลา",
+      "zh": "魚",
+      "emoji": "🐟",
+      "obsolete": false,
+      "image": ""
+    },
+    {
+      "letter": "ผ",
+      "word": "ผึ้ง",
+      "zh": "蜜蜂",
+      "emoji": "🐝",
+      "obsolete": false,
+      "image": ""
+    },
+    {
+      "letter": "ฝ",
+      "word": "ฝา",
+      "zh": "蓋子",
+      "emoji": "🫙",
+      "obsolete": false,
+      "image": ""
+    },
+    {
+      "letter": "พ",
+      "word": "พาน",
+      "zh": "高腳盤",
+      "emoji": "🏆",
+      "obsolete": false,
+      "image": ""
+    },
+    {
+      "letter": "ฟ",
+      "word": "ฟัน",
+      "zh": "牙齒",
+      "emoji": "🦷",
+      "obsolete": false,
+      "image": ""
+    },
+    {
+      "letter": "ภ",
+      "word": "สำเภา",
+      "zh": "帆船",
+      "emoji": "⛵",
+      "obsolete": false,
+      "image": ""
+    },
+    {
+      "letter": "ม",
+      "word": "ม้า",
+      "zh": "馬",
+      "emoji": "🐎",
+      "obsolete": false,
+      "image": ""
+    },
+    {
+      "letter": "ย",
+      "word": "ยักษ์",
+      "zh": "巨人",
+      "emoji": "👹",
+      "obsolete": false,
+      "image": ""
+    },
+    {
+      "letter": "ร",
+      "word": "เรือ",
+      "zh": "船",
+      "emoji": "🚣",
+      "obsolete": false,
+      "image": ""
+    },
+    {
+      "letter": "ล",
+      "word": "ลิง",
+      "zh": "猴子",
+      "emoji": "🐒",
+      "obsolete": false,
+      "image": ""
+    },
+    {
+      "letter": "ว",
+      "word": "แหวน",
+      "zh": "戒指",
+      "emoji": "💍",
+      "obsolete": false,
+      "image": ""
+    },
+    {
+      "letter": "ศ",
+      "word": "ศาลา",
+      "zh": "涼亭",
+      "emoji": "🛖",
+      "obsolete": false,
+      "image": ""
+    },
+    {
+      "letter": "ษ",
+      "word": "ฤๅษี",
+      "zh": "隱士",
+      "emoji": "🧙",
+      "obsolete": false,
+      "image": ""
+    },
+    {
+      "letter": "ส",
+      "word": "เสือ",
+      "zh": "老虎",
+      "emoji": "🐅",
+      "obsolete": false,
+      "image": ""
+    },
+    {
+      "letter": "ห",
+      "word": "หีบ",
+      "zh": "箱子",
+      "emoji": "🧰",
+      "obsolete": false,
+      "image": ""
+    },
+    {
+      "letter": "ฬ",
+      "word": "จุฬา",
+      "zh": "星形風箏",
+      "emoji": "🪁",
+      "obsolete": false,
+      "image": ""
+    },
+    {
+      "letter": "อ",
+      "word": "อ่าง",
+      "zh": "盆",
+      "emoji": "🛁",
+      "obsolete": false,
+      "image": ""
+    },
+    {
+      "letter": "ฮ",
+      "word": "นกฮูก",
+      "zh": "貓頭鷹",
+      "emoji": "🦉",
+      "obsolete": false,
+      "image": ""
+    }
+  ]
+}
