@@ -128,3 +128,9 @@ a{color:var(--accent)}
   .sheet{border:0;padding:0;border-radius:0}
   .sheet,.cell,.c-box{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
+/* form fields include padding and border in their width so they stay inside cards */
+.emo,.fld,.panel input,.prctl input,.prctl select,.ctile .say{box-sizing:border-box;max-width:100%}
+.ctile{padding:12px 10px;align-items:stretch;text-align:center}
+.ctile .p,.ctile .w,.ctile .tag{align-self:center}
+.ctile .w{font-size:26px}
+.ctile .emo{padding:6px 8px;font-size:.95rem}
