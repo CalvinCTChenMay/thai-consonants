@@ -23,6 +23,7 @@
         <button id="m-practice" aria-pressed="true" data-t="mPractice"></button>
         <button id="m-grid" aria-pressed="false" data-t="mGrid"></button>
         <button id="m-exam" aria-pressed="false" data-t="mExam"></button>
+        <button id="m-print" aria-pressed="false" data-t="mPrint"></button>
       </div>
       <div class="seg" role="group" aria-label="語言 ภาษา">
         <button id="l-zh" aria-pressed="true" lang="zh-Hant">中文</button>
@@ -118,6 +119,35 @@
     </div>
   </section>
 
+  <section id="v-print" hidden>
+    <div class="prctl">
+      <div class="row"><span data-t="prPreset"></span>
+        <button class="btn sm" data-preset="cards" data-t="prCards"></button>
+        <button class="btn sm" data-preset="work" data-t="prWork"></button>
+        <button class="btn sm" data-preset="test" data-t="prTest"></button>
+      </div>
+      <div class="row">
+        <label class="row" style="flex:1 1 260px;display:flex"><span data-t="prTitleL"></span><input type="text" id="pr-title" maxlength="60"></label>
+        <label class="row" style="display:inline-flex"><span data-t="prCols"></span><select id="pr-cols"></select></label>
+        <label class="row" style="display:inline-flex"><span data-t="prOrient"></span><select id="pr-orient"><option value="landscape" data-t="prLand"></option><option value="portrait" data-t="prPort"></option></select></label>
+      </div>
+      <div class="row opts" style="font-size:.95rem"><span data-t="prShow"></span>
+        <label><input type="checkbox" id="pr-pic" checked> <span data-t="prPic"></span></label>
+        <label><input type="checkbox" id="pr-letter" checked> <span data-t="prLetter"></span></label>
+        <label><input type="checkbox" id="pr-word" checked> <span data-t="prWord"></span></label>
+        <label><input type="checkbox" id="pr-zh" checked> <span data-t="prZh"></span></label>
+        <label><input type="checkbox" id="pr-box"> <span data-t="prBox"></span></label>
+        <label><input type="checkbox" id="pr-name"> <span data-t="prName"></span></label>
+        <label><input type="checkbox" id="pr-shuffle"> <span data-t="prShuffle"></span></label>
+      </div>
+      <div class="row" style="justify-content:space-between"><p class="muted" data-t="prHint" style="flex:1 1 300px"></p><button class="btn primary" id="b-print" data-t="prBtn"></button></div>
+    </div>
+    <div class="sheet" id="sheet">
+      <div class="sh-head"><h2 id="shTitle"></h2><div class="sh-name" id="shName" hidden></div></div>
+      <div class="sh-grid" id="shGrid"></div>
+    </div>
+  </section>
+
   <footer class="foot">
     <span data-t="foot"></span>
     <a href="admin.html" data-t="admin"></a>
@@ -138,6 +168,9 @@ zh:{title:'泰文子音圖卡',h1:'看圖寫子音',sub:'看圖和名稱詞，�
   tapAns:'點我看答案',card:'{z} 圖卡',best:'最佳成績：{p} 分（{s} / {n}）',noBest:'還沒有考試紀錄',qNo:'第 {i} / {n} 題',correctN:'答對 {s}',opt:'選項 {k} {l}',
   right:'答對了：{a}',wrong:'答錯了，正確答案是 {a}',next:'下一題',seeRes:'看成績',pts:'{p} 分',
   g100:'滿分，全部答對',g80:'很好，再複習答錯的幾個',g60:'及格，繼續加油',g0:'多練習幾次再來考',time:'用時 {m} 分 {s} 秒',picked:'你選了 {l}',
+  mPrint:'列印',prPreset:'快速設定',prCards:'字卡',prWork:'練習單',prTest:'考卷',prTitleL:'標題',prDefTitle:'泰文 44 子音',prCols:'每列幾個',
+  prOrient:'紙張方向',prLand:'橫向',prPort:'直向',prShow:'顯示',prPic:'圖片',prLetter:'字母',prWord:'名稱詞',prZh:'中文',prBox:'寫字格',
+  prName:'姓名和日期欄',prShuffle:'打亂順序',prHint:'每列 10 個建議用 A4 橫向。下面是預覽，列印時只會印出這張紙。',prBtn:'列印',nameL:'姓名',dateL:'日期',
   noTTS:'這個瀏覽器不能念出聲音，請改用 Chrome、Safari 或 Edge。',noVoice:'這台裝置好像沒有泰文語音，可能念不出來。可以在系統的語音設定加裝「泰文（Thai）」語音後重新整理。'},
 th:{title:'บัตรภาพพยัญชนะไทย',h1:'ดูภาพ เขียนพยัญชนะ',sub:'ดูภาพและคำประจำพยัญชนะ เขียนพยัญชนะในช่องเขียน แล้วเปิดดูเฉลย',aMode:'โหมด',mPractice:'ฝึก',mGrid:'บัตรภาพทั้งหมด',mExam:'สอบ',
   oHide:'ซ่อนคำภาษาไทย ดูแค่ภาพและความหมาย',oShuffle:'สุ่มลำดับ',oObs:'รวม ฃ และ ฅ ที่เลิกใช้แล้ว',oSay:'อ่านออกเสียงเมื่อเปิดเฉลย',restart:'เริ่มใหม่',
@@ -151,6 +184,9 @@ th:{title:'บัตรภาพพยัญชนะไทย',h1:'ดูภา
   tapAns:'แตะเพื่อดูเฉลย',card:'บัตร {z}',best:'คะแนนสูงสุด: {p} คะแนน ({s} / {n})',noBest:'ยังไม่มีประวัติการสอบ',qNo:'ข้อ {i} / {n}',correctN:'ถูก {s} ข้อ',opt:'ตัวเลือก {k} {l}',
   right:'ถูกต้อง: {a}',wrong:'ผิด คำตอบที่ถูกคือ {a}',next:'ข้อต่อไป',seeRes:'ดูผลสอบ',pts:'{p} คะแนน',
   g100:'เต็ม ตอบถูกทุกข้อ',g80:'ดีมาก ทบทวนข้อที่ผิดอีกนิด',g60:'ผ่าน สู้ต่อไป',g0:'ฝึกอีกหน่อยแล้วมาสอบใหม่',time:'ใช้เวลา {m} นาที {s} วินาที',picked:'คุณเลือก {l}',
+  mPrint:'พิมพ์',prPreset:'ตั้งค่าด่วน',prCards:'บัตรคำ',prWork:'แบบฝึกหัด',prTest:'ข้อสอบ',prTitleL:'หัวเรื่อง',prDefTitle:'พยัญชนะไทย 44 ตัว',prCols:'จำนวนต่อแถว',
+  prOrient:'แนวกระดาษ',prLand:'แนวนอน',prPort:'แนวตั้ง',prShow:'แสดง',prPic:'รูป',prLetter:'พยัญชนะ',prWord:'คำประจำพยัญชนะ',prZh:'ความหมายภาษาจีน',prBox:'ช่องเขียน',
+  prName:'ช่องชื่อและวันที่',prShuffle:'สลับลำดับ',prHint:'ถ้าแถวละ 10 ตัว แนะนำกระดาษ A4 แนวนอน ด้านล่างคือตัวอย่าง เวลาพิมพ์จะพิมพ์เฉพาะแผ่นนี้',prBtn:'พิมพ์',nameL:'ชื่อ',dateL:'วันที่',
   noTTS:'เบราว์เซอร์นี้อ่านออกเสียงไม่ได้ กรุณาใช้ Chrome, Safari หรือ Edge',noVoice:'เครื่องนี้ดูเหมือนไม่มีเสียงภาษาไทย อาจอ่านออกเสียงไม่ได้ ติดตั้งเสียงภาษาไทยในการตั้งค่าเสียงของระบบ แล้วรีเฟรชหน้า'}};
 const LK='thaiConsonantLang';
 let lang=(()=>{const q=new URLSearchParams(location.search).get('lang');if(q==='th'||q==='zh')return q;
@@ -233,8 +269,8 @@ function buildGrid(){
       if(open){s.className='a';s.textContent=d[0];el.children[1].textContent=d[1];if($('o-say').checked)say(chant(i))}else{s.className='q';s.textContent=t('tapAns');el.children[1].textContent=hide?'？？':d[1]}};
     g.appendChild(el)});
 }
-function mode(m){if(m!=='practice')stopAuto();['practice','grid','exam'].forEach(k=>{$('v-'+k).hidden=k!==m;$('m-'+k).setAttribute('aria-pressed',k===m)});
-  if(m==='grid')buildGrid();if(m==='practice')fit();if(m==='exam'&&!ex.running&&$('exEnd').hidden)examSetup()}
+function mode(m){if(m!=='practice')stopAuto();['practice','grid','exam','print'].forEach(k=>{$('v-'+k).hidden=k!==m;$('m-'+k).setAttribute('aria-pressed',k===m)});
+  if(m==='grid')buildGrid();if(m==='print')buildSheet();if(m==='practice')fit();if(m==='exam'&&!ex.running&&$('exEnd').hidden)examSetup()}
 
 const SIM=[["ข","ช","ซ","ฃ"],["ค","ด","ต","ฅ","ศ"],["ฆ","ม","ฒ","ฑ"],["ง","ว"],["จ","ร","ธ"],["ฉ","ณ","ฌ"],["ญ","ณ","ฌ","ฎ","ฏ"],
   ["ก","ถ","ภ","ฎ"],["ท","ฑ","ห","ม"],["ธ","ฐ","ร"],["น","ฬ","ห","ม"],["บ","ป","ษ"],["ผ","ฝ","พ","ฟ"],["ย","ฮ","ข"],
@@ -295,10 +331,36 @@ $('exCount').querySelectorAll('button').forEach(b=>b.onclick=()=>{ex.count=b.dat
 $('b-exStart').onclick=examNew;$('b-exAgain').onclick=examNew;$('b-exSetup').onclick=examSetup;$('exNext').onclick=examNext;
 $('b-exWrong').onclick=()=>examStart(shuffle(ex.wrong.map(w=>w.i)));
 
-$('m-practice').onclick=()=>mode('practice');$('m-grid').onclick=()=>mode('grid');$('m-exam').onclick=()=>mode('exam');
+let prTitleTouched=false,prOrder=null;
+const PRESETS={cards:{pic:1,letter:1,word:1,zh:1},work:{pic:1,word:1,zh:1,box:1},test:{pic:1,zh:1,box:1,name:1,shuffle:1}};
+(()=>{const s=$('pr-cols');for(let n=4;n<=12;n++){const o=document.createElement('option');o.value=n;o.textContent=n;if(n===10)o.selected=true;s.append(o)}})();
+function buildSheet(){
+  if(!prTitleTouched)$('pr-title').value=t('prDefTitle');
+  $('sheet').style.setProperty('--cols',$('pr-cols').value);
+  $('shTitle').textContent=$('pr-title').value;
+  const nm=$('shName');nm.hidden=!$('pr-name').checked;nm.innerHTML='';
+  [t('nameL'),t('dateL')].forEach(l=>{const d=document.createElement('div');d.append(l+' ',document.createElement('span'));nm.append(d)});
+  let list=deck();
+  if($('pr-shuffle').checked){if(!prOrder||prOrder.length!==list.length||prOrder.some(i=>!list.includes(i)))prOrder=shuffle(list.slice());list=prOrder}else prOrder=null;
+  const on=k=>$('pr-'+k).checked;
+  $('shGrid').innerHTML=list.map(i=>{const d=D[i];return '<div class="cell">'+
+    (on('pic')?'<div class="c-pic">'+picHTML(i)+'</div>':'')+(on('letter')?'<div class="c-l">'+esc(d[0])+'</div>':'')+
+    (on('word')?'<div class="c-w">'+esc(d[1])+'</div>':'')+(on('zh')?'<div class="c-z" lang="zh-Hant">'+esc(zhOf(i))+'</div>':'')+
+    (on('box')?'<div class="c-box"></div>':'')+'</div>'}).join('');
+  let ps=$('pageStyle');if(!ps){ps=document.createElement('style');ps.id='pageStyle';document.head.append(ps)}
+  ps.textContent='@page{size:A4 '+($('pr-orient').value==='portrait'?'portrait':'landscape')+';margin:10mm}';
+}
+['pr-cols','pr-orient','pr-pic','pr-letter','pr-word','pr-zh','pr-box','pr-name','pr-shuffle'].forEach(id=>$(id).addEventListener('change',()=>{if(id==='pr-shuffle')prOrder=null;buildSheet()}));
+$('pr-title').addEventListener('input',()=>{prTitleTouched=true;$('shTitle').textContent=$('pr-title').value});
+document.querySelectorAll('[data-preset]').forEach(b=>b.onclick=()=>{const p=PRESETS[b.dataset.preset];
+  ['pic','letter','word','zh','box','name','shuffle'].forEach(k=>$('pr-'+k).checked=!!p[k]);prOrder=null;buildSheet()});
+$('b-print').onclick=()=>{buildSheet();window.print()};
+window.addEventListener('beforeprint',buildSheet);
+
+$('m-practice').onclick=()=>mode('practice');$('m-grid').onclick=()=>mode('grid');$('m-exam').onclick=()=>mode('exam');$('m-print').onclick=()=>mode('print');
 $('b-restart').onclick=()=>{mode('practice');start()};$('b-clear').onclick=clearPad;$('b-reveal').onclick=reveal;$('b-known').onclick=markKnown;$('b-again').onclick=markAgain;
 $('o-hide').onchange=()=>{if(!revealed&&queue.length)nextCard();buildGrid()};
-$('o-shuffle').onchange=start;$('o-obs').onchange=()=>{start();buildGrid()};
+$('o-shuffle').onchange=start;$('o-obs').onchange=()=>{start();buildGrid();if(!$('v-print').hidden)buildSheet()};
 document.addEventListener('keydown',e=>{if(e.target.tagName==='INPUT'||e.target.tagName==='SELECT')return;
   if(!$('v-exam').hidden){if($('exQ').hidden)return;
     if(/^[1-4]$/.test(e.key)&&!ex.locked){const b=$('exC').children[+e.key-1];if(b)b.click()}
@@ -348,6 +410,7 @@ function setLang(l){
   if(!$('exSetup').hidden)$('exBest').textContent=bestText(getBest());
   if(!$('exQ').hidden)qText();
   if(!$('exEnd').hidden)endText();
+  if(!$('v-print').hidden)buildSheet();
 }
 $('l-zh').onclick=()=>setLang('zh');$('l-th').onclick=()=>setLang('th');
 
@@ -363,6 +426,7 @@ fetch('content.json',{cache:'no-cache'}).then(r=>r.ok?r.json():null).then(j=>{
   if(!applyContent(j))return;
   if(!ex.running)start();
   if(!$('v-grid').hidden)buildGrid();
+  if(!$('v-print').hidden)buildSheet();
 }).catch(()=>{});
 </script>
 </body>
